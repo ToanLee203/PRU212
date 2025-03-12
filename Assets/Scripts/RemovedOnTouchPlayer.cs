@@ -23,6 +23,7 @@ public class RemovedOnTouchPlayer : MonoBehaviour
         {
             last_update_delta_time = 0;
 
+            player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
 
@@ -54,11 +55,7 @@ public class RemovedOnTouchPlayer : MonoBehaviour
                 {
                     ObjectPoolManager.ReturnGameObjectToPool(gameObject);
                     SpawnEnemies.CURRENT_ACTIVE_ENEMIES_COUNT -= 1;
-                    var player_hp_state = player.GetComponent<PlayerHP>();
-                    if (player_hp_state != null)
-                    {
-                        player_hp_state.on_hit(1);
-                    }
+                    GameState.CURRENT_HP -= 10;
                     Die();
                 }
             }
@@ -67,6 +64,7 @@ public class RemovedOnTouchPlayer : MonoBehaviour
     private void Die()
     {
         DropExp();
+        SpawnEnemies.CURRENT_ACTIVE_ENEMIES_COUNT -= 1;
         ObjectPoolManager.ReturnGameObjectToPool(gameObject);
 
     }

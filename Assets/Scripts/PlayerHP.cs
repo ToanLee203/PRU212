@@ -2,29 +2,52 @@ using UnityEngine;
 
 public class PlayerHP : MonoBehaviour
 {
+
+    float default_scale_x;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        current_hp = max_hp;
+        //current_hp = max_hp;
+        //var sr = GetComponent<Material>();
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+
+            var tmp = sr.transform.localScale;
+            //sr.mainTextureOffset = new Vector2((GameState.CURRENT_HP / GameState.MAX_HP), 1);
+           default_scale_x=tmp.x;
+        }
     }
+
+    public float current_hp;
+    float delta_update_time = 0;
 
     // Update is called once per frame
     void Update()
     {
-        
+        delta_update_time+= Time.deltaTime;
+        if(delta_update_time > 0.2)
+        {
+            //var sr = GetComponent<Material>();
+            var sr = GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+
+                var tmp = sr.transform.localScale;
+                current_hp = GameState.CURRENT_HP;
+                tmp.x = Mathf.Max(0f, ((float)GameState.CURRENT_HP / (float)GameState.MAX_HP)) * default_scale_x;
+                //tmp.x = 0.5f * default_scale_x;
+                sr.transform.localScale = tmp;
+                //sr.material.mainTextureOffset = new Vector2(0.5f, 1);
+            }
+        }
     }
 
-    public int max_hp = 20;
-    private int current_hp = 20;
+    //public int max_hp = 20;
+    //private int current_hp = 20;
 
     public void on_hit(int damage)
     {
-        current_hp -= damage;
-        current_hp = Mathf.Max(current_hp, 0);
-        if (current_hp == 0)
-        {
-            // TODO
-            gameObject.SetActive(false);
-        }
+        GameState.CURRENT_HP -= damage;
     }
 }
